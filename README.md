@@ -17,8 +17,8 @@
 
 將資料存入 cache 並限時 1 HR
 
-為了達到快速 non-exisetent shorten URL 判定
-**在 cache 中建立一張 hash table，用於紀錄目前short_id 有那些 prefix**，結構如下
+**為了達到快速 non-exisetent shorten URL 判定
+在 cache 中建立一張 hash table，用於紀錄目前short_id 有那些 prefix**，結構如下
 
 |prefix(Key)  |count(value)  |
 |------|------|
