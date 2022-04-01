@@ -9,8 +9,8 @@ const Redis = require('redis');
 const bodyParser = require('body-parser');
 const redisClient = Redis.createClient();
 
-const urlencodedParser = bodyParser.urlencoded({ extended: false })
-
+//const urlencodedParser = bodyParser.urlencoded({ extended: false })
+app.use(bodyParser.text({type: '*/*'}))
 
 const port = 3000
 redisClient.connect()
@@ -18,7 +18,7 @@ redisClient.connect()
 
 
 app.listen(port, () => {
-  console.log(`Example app listening on port ${port}`)
+  console.log(`app listening on port ${port}`)
 })
 
 
@@ -27,15 +27,17 @@ app.listen(port, () => {
 function checkValidTime(expireAt){
    now = new Date();
    expire = new Date(expireAt);
+   console.log(now);
+   console.log(expire);
    return expire >= now;
 }
 
 
-app.post("/url_shortener", urlencodedParser, async(req, res)=>{
+app.post("/url_shortener", async(req, res)=>{
   try{
     
-      const {url, expireAt} = req.body;
-
+      const {url, expireAt} = JSON.parse(req.body);
+      // error checking
       if(!checkValidTime(expireAt)){
         return res.json({"error" : "url should expire at future"});
       }
@@ -44,7 +46,7 @@ app.post("/url_shortener", urlencodedParser, async(req, res)=>{
         return res.json({"error" : "invalid url"});
       }
       
-      var short_id = ''
+      var short_id = '';
 
       // avoid duplicate shortid
       while(true){
@@ -73,7 +75,7 @@ app.post("/url_shortener", urlencodedParser, async(req, res)=>{
       const newMapping = await pool.query("INSERT INTO url_mapping (id, org_url, expire) VALUES ($1, $2, $3) RETURNING *",
        [short_id, url, expireAt]);
 
-      redisClient.set(short_id, url+'_'+String(expireAt),
+      redisClient.set(short_id, url+'_'+expireAt,
         {EX : 3600});
       return res.json({
         "id" : short_id,
@@ -91,6 +93,8 @@ app.get("/url_shortener/:id", async(req, res)=>{
   try{
       const {id} = req.params;
 
+      //fast response on non-exsistent url
+
       if(id.length != 6){
         return  res.status(404).send("not founded");
       }
@@ -104,6 +108,8 @@ app.get("/url_shortener/:id", async(req, res)=>{
 
 
       cacheRow = await redisClient.get(id);
+
+      // cache hit !!!
 
       if(cacheRow !== null){
         flag = cacheRow.lastIndexOf('_');
@@ -124,16 +130,11 @@ app.get("/url_shortener/:id", async(req, res)=>{
 
           return res.status(404).send("not founded");
         }
-
-
-        return res.json({
-            'url' : url,
-            'expireAt' : expireAt
-        })
-
-         // return res.redirect(301, Mapping.rows[0].org_url);
+          res.redirect(url);
       }
       
+      // query main storage
+
       const Mapping = await pool.query("select * from url_mapping where id = $1",
        [id]);
        
@@ -141,8 +142,8 @@ app.get("/url_shortener/:id", async(req, res)=>{
         return  res.status(404).send("not founded");
       }
 
-      expireAt = new Date(Mapping.rows[0].expire)
-      org_url = Mapping.rows[0].org_url
+      expireAt = new Date(Mapping.rows[0].expire).toISOString()
+      url = Mapping.rows[0].org_url
 
       if(!checkValidTime(expireAt)){
         // subtact prefix count in redis
@@ -156,12 +157,10 @@ app.get("/url_shortener/:id", async(req, res)=>{
         return res.status(404).send("not founded");
       }
 
-     
-      await redisClient.set(id, org_url+'_'+String(expireAt), 
+      await redisClient.set(id, url+'_'+(expireAt), 
       {EX: 3600})
 
-      return res.send('get mapping from DB')
-      //res.redirect(301, Mapping.rows[0].org_url);
+      return res.redirect(url);
 
   } catch(err){
       console.log(err);
