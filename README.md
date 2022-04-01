@@ -9,7 +9,7 @@
 為了確保 short_id 發生 collision 時服務仍可以正常運作，產生 short_id 後須檢查有無重複，在插入資料
 
 ## Redis cache 設計:
-一般而言，**url-shortener 服務的 request 數: create shortUrl  <<  get shortUrl**
+一般而言，**url-shortener 服務的 request 數: redirect  >>  create shortUrl**
 而當產生一個 shortUrl 連結不久， 或有User request 後，將有比較高的機會被再次 request，如簡報中的 shortUrl 在短時間會被大量聽眾 request，這時就很適合利用 cache 機制。
 根據上述理由，我的設計為
 * create shortUr
