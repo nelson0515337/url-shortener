@@ -27,23 +27,23 @@ app.listen(port, () => {
 function checkValidTime(expireAt){
    now = new Date();
    expire = new Date(expireAt);
-   console.log(now);
-   console.log(expire);
+   //console.log(now);
+   //console.log(expire);
    return expire >= now;
 }
 
 
 app.post("/url_shortener", async(req, res)=>{
   try{
-    
+
       const {url, expireAt} = JSON.parse(req.body);
       // error checking
-      if(!checkValidTime(expireAt)){
-        return res.json({"error" : "url should expire at future"});
+      if(!validUrl.isUri(url)){
+        return res.status(400).json({"error" : "invalid url"});
       }
 
-      if(!validUrl.isUri(url)){
-        return res.json({"error" : "invalid url"});
+      if(!checkValidTime(expireAt)){
+        return res.status(400).json({"error" : "invalid expire time"});
       }
       
       var short_id = '';
@@ -56,7 +56,7 @@ app.post("/url_shortener", async(req, res)=>{
         cachePrefix = await redisClient.HGET('pre', prefix);
 
         if(cachePrefix == null || cachePrefix == '0'){
-          console.log('safe prefix');
+          // console.log('safe prefix');
           await redisClient.HSET('pre', prefix, 1);
           break;
         }
@@ -65,7 +65,7 @@ app.post("/url_shortener", async(req, res)=>{
        [short_id]);
        
        if(!Mapping.rows.length){
-         console.log('safe short_id');
+         // console.log('safe short_id');
          newCount = parseInt(cachePrefix) + 1;
          await redisClient.HSET("pre", prefix, newCount);
          break;
@@ -77,7 +77,7 @@ app.post("/url_shortener", async(req, res)=>{
 
       redisClient.set(short_id, url+'_'+expireAt,
         {EX : 3600});
-      return res.json({
+      return res.status(201).json({
         "id" : short_id,
         "shortUrl" : "localhost:"+ String(port) + "/url_shortener/" + short_id
       });
@@ -96,14 +96,14 @@ app.get("/url_shortener/:id", async(req, res)=>{
       //fast response on non-exsistent url
 
       if(id.length != 6){
-        return  res.status(404).send("not founded");
+        return  res.status(404).send("not found");
       }
 
       const prefix = id.substring(0,3);
       const cachePrefix = await redisClient.HGET('pre', prefix);
 
       if(cachePrefix == null || cachePrefix == '0'){
-        return res.status(404).send("not founded");
+        return res.status(404).send("not found");
       }
 
 
@@ -128,7 +128,7 @@ app.get("/url_shortener/:id", async(req, res)=>{
           await pool.query("DELETE FROM url_mapping WHERE id = $1",
           [id]);
 
-          return res.status(404).send("not founded");
+          return res.status(404).send("not found");
         }
           res.redirect(url);
       }
@@ -160,10 +160,12 @@ app.get("/url_shortener/:id", async(req, res)=>{
       await redisClient.set(id, url+'_'+(expireAt), 
       {EX: 3600})
 
-      return res.redirect(url);
+      res.redirect(url);
 
   } catch(err){
       console.log(err);
       return 
   }
 })
+
+module.exports = app;
