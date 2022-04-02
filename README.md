@@ -13,7 +13,7 @@
 一般而言，**url-shortener 服務的 request 數: redirect  >>  create shortUrl**
 而當產生一個 shortUrl 連結不久， 或有User request 後，將有比較高的機會被再次 request，如簡報中的 shortUrl 在短時間會被大量聽眾 request，這時就很適合利用 cache 機制。
 根據上述理由，我的設計為
-* create shortUr
+* create shortUrl
 * get shortUrl 但只在 DB 找到資料
 
 將資料存入 cache 並限時 1 HR
