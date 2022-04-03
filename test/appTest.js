@@ -6,7 +6,14 @@ chai.should();
 chai.use(chaiHttp);
 
 create_id = '';
+expire_id = '';
 
+function sleep(ms) {
+    return new Promise((resolve) => {
+      setTimeout(resolve, ms);
+    });
+  }
+  
 describe('Test API', () => {
 
     describe('Upload URL API test', () =>{
@@ -65,7 +72,9 @@ describe('Test API', () => {
 
 
     describe('REDIRECT URL API test', () =>{
-        it("seceed test", (done) => {
+
+        
+        it("suceed test", (done) => {
             chai.request(server)
                 .get('/url_shortener/' + create_id)
                 .end((err, res) =>{
@@ -74,7 +83,7 @@ describe('Test API', () => {
                 })
         })
 
-        it("invalid url case1", (done) => {
+        it("invalid url test case1", (done) => {
             chai.request(server)
                 .get('/url_shortener/qweqwfHBFHD123')
                 .end((err, res) =>{
@@ -84,19 +93,58 @@ describe('Test API', () => {
                 })
         })
 
+        dummy_id =  nanoid(6);
+        while(dummy_id == create_id){dummy_id = nanoid(6)}
         
-        it("invalid url case2", (done) => {
-            dummy =  nanoid(6);
-            while(dummy == create_id){dummy = nanoid(6)}
+        it("invalid url test case2", (done) => {
             chai.request(server)
-                .get('/url_shortener/dummy')
+                .get('/url_shortener/'+dummy_id)
                 .end((err, res) =>{
                         res.should.have.status(404);
                         res.text.should.be.eq('not found');
                     done();
                 })
         })
+
+        // create dummy
+        const new_time = new Date(new Date().getTime() + 5000);
+        it("create url for expire test", (done) => {
+            const task = {
+                "url" : "https://drive.google.com/file/d/1AreBiHDUYXH6MI5OqWpKP-f6-W0zA8np/view",
+                "expireAt" : new_time.toISOString()
+            };
+            chai.request(server)
+                .post('/url_shortener')
+                .send(task)
+                .end((err, res) =>{
+                    expire_id = res.body.id
+                    done();
+                })
+        })
+
+        it("wait for url to expire", async () => {
+             // sleep for 5 sec
+             var count = 5
+             while(count){
+                 console.log(`wait for ${count} seconds`);
+                 await sleep(1000);
+                 count--;
+             }
+        })
+         
+        it("exipre url test", (done) => {
+            chai.request(server)
+                .get('/url_shortener/'+expire_id)
+                .end((err, res) =>{
+                        res.should.have.status(404);
+                        res.text.should.be.eq('not found');
+                    done();
+                })
+        })
+      
     })
+
+
     
 
 })

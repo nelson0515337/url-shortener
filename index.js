@@ -130,7 +130,7 @@ app.get("/url_shortener/:id", async(req, res)=>{
 
           return res.status(404).send("not found");
         }
-          res.redirect(url);
+        return res.status(200).redirect(url);
       }
       
       // query main storage
@@ -160,7 +160,7 @@ app.get("/url_shortener/:id", async(req, res)=>{
       await redisClient.set(id, url+'_'+(expireAt), 
       {EX: 3600})
 
-      res.redirect(url);
+      return res.status(200).redirect(url);
 
   } catch(err){
       console.log(err);
