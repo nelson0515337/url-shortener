@@ -4,12 +4,13 @@
 
 服務使用 postgresql 作為 database， Redis 作為 cache storage，用作降低 DB 的讀取量，提高reponse速度， 並在cache中維護 “prefix” 來快速偵測 non-exisetent shorten URL
 
-## DB 設計
-|Name  | Data type |
-|------|------|
-|id(PK)| text|
-|org_url|text|
-|expire|textstamp without time zone|
+## DB schema
+|Name  | Data type | Description |
+|------|------|------|
+|id(PK)| text| short_url id |
+|org_url|text| origin url
+|expire|textstamp without time zone| expire time
+
 
 ## short_id 設計
 該服務希望 short_id 方便使用，所以設計 6 碼 short_id ，
@@ -25,8 +26,7 @@
 
 將資料存入 cache 並限時 1 HR
 
-**為了達到快速 non-exisetent shorten URL 判定
-在 cache 中建立一張 hash table，用於紀錄目前short_id 有那些 prefix**，結構如下
+**在 cache 中建立一張 hash table，用於紀錄目前short_id 有那些 prefix**，結構如下
 
 |prefix(Key)  |count(value)  |
 |------|------|
