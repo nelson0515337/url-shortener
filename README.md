@@ -4,6 +4,13 @@
 
 服務使用 postgresql 作為 database， Redis 作為 cache storage，用作降低 DB 的讀取量，提高reponse速度， 並在cache中維護 “prefix” 來快速偵測 non-exisetent shorten URL
 
+## DB 設計
+|Name  | Data type |
+|------|------|
+|id(PK)| text|
+|org_url|text|
+|expire|textstamp without time zone|
+
 ## short_id 設計
 該服務希望 short_id 方便使用，所以設計 6 碼 short_id ，
 使用 [nanoid lib]: https://github.com/ai/nanoid 產生類似 UUID 的 short_id，
@@ -65,8 +72,8 @@
 
 ```
 Node.js v16.14.0
-Postgre
-Rerdis
+PostgreSQL v11
+Rerdis v6.2.6
 ```
 
 ## Usage
@@ -86,7 +93,7 @@ node index
 ### Upload URL API
 
 ```
-curl -X POST -H "Content-Type:application/json" http://localhost/api/v1/urls -d '{
+curl -X POST -H "Content-Type:application/json" http://localhost:3000/url_shortener -d '{
 "url": "<original_url>",
 "expireAt": "2021-02-08T09:20:41Z"
 }'
@@ -97,14 +104,19 @@ curl -X POST -H "Content-Type:application/json" http://localhost/api/v1/urls -d 
 ```
 {
   "id": "<url_id>",
-  "shortUrl": "http://localhost/<url_id>"
+  "shortUrl": "http://localhost:3000/<url_id>"
 }
 ```
 
 ### Redirect URL API
 
 ```
-curl -L -X GET http://localhost/<url_id>
+curl -L -X GET http://localhost:3000/<url_id>
 ```
 ### Response
 REDIRECT to orininal URL
+
+### TestApp
+```
+    npm run test
+```
