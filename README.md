@@ -99,11 +99,9 @@ curl -X POST -H "Content-Type:application/json" http://localhost/url_shortener -
 }'
 ```
 
-### example
-[[/img/create.png]]
 
 
-#### Response
+### Response
 
 ```
 {
@@ -112,18 +110,22 @@ curl -X POST -H "Content-Type:application/json" http://localhost/url_shortener -
 }
 ```
 
-### Redirect URL API
+#### example
+<img src="img/create.png">
 
-### example
-[[/img/create.png]]
+## Redirect URL API
 
 ```
 curl -L -X GET http://localhost/<url_id>
 ```
 ### Response
 REDIRECT to orininal URL
+#### example
+<img src="img/redirect.png">
 
 ### TestApp
 ```
  npm run test
 ```
+### result
+<img src="img/testing.png">

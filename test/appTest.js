@@ -83,7 +83,7 @@ describe('Test API', () => {
                 })
         })
 
-        it("invalid url test case1", (done) => {
+        it("non-existent shorten URL test case1", (done) => {
             chai.request(server)
                 .get('/url_shortener/qweqwfHBFHD123')
                 .end((err, res) =>{
@@ -96,7 +96,7 @@ describe('Test API', () => {
         dummy_id =  nanoid(6);
         while(dummy_id == create_id){dummy_id = nanoid(6)}
         
-        it("invalid url test case2", (done) => {
+        it("non-existent shorten URL test case2", (done) => {
             chai.request(server)
                 .get('/url_shortener/'+dummy_id)
                 .end((err, res) =>{
@@ -108,7 +108,7 @@ describe('Test API', () => {
 
         // create dummy
         const new_time = new Date(new Date().getTime() + 5000);
-        it("create url for expire test", (done) => {
+        it("create test case for expire test", (done) => {
             const task = {
                 "url" : "https://drive.google.com/file/d/1AreBiHDUYXH6MI5OqWpKP-f6-W0zA8np/view",
                 "expireAt" : new_time.toISOString()
@@ -122,7 +122,7 @@ describe('Test API', () => {
                 })
         })
 
-        it("wait for url to expire", async () => {
+        it("wait for test case to expire", async () => {
              // sleep for 5 sec
              var count = 5
              while(count){
@@ -132,7 +132,7 @@ describe('Test API', () => {
              }
         })
          
-        it("exipre url test", (done) => {
+        it("exipre shorten URL test", (done) => {
             chai.request(server)
                 .get('/url_shortener/'+expire_id)
                 .end((err, res) =>{
