@@ -40,7 +40,7 @@
 * create shortUrl :
     產生的 short_id 若沒有匹配的 prefix 即可直接插入資料，不須再檢查 DB
 
-**值得注意的是 |prefix| << |short_id| 因此不會大量占用 cache 空間**
+**值得注意的是 |prefix| << |short_id| 因此不至於使 cache 空間無法負荷**
 
 ## Create shortUrl 流程:
 
@@ -93,7 +93,7 @@ node index
 ### Upload URL API
 
 ```
-curl -X POST -H "Content-Type:application/json" http://localhost:3000/url_shortener -d '{
+curl -X POST -H "Content-Type:application/json" http://localhost/url_shortener -d '{
 "url": "<original_url>",
 "expireAt": "2021-02-08T09:20:41Z"
 }'
@@ -104,19 +104,19 @@ curl -X POST -H "Content-Type:application/json" http://localhost:3000/url_shorte
 ```
 {
   "id": "<url_id>",
-  "shortUrl": "http://localhost:3000/<url_id>"
+  "shortUrl": "http://localhost/<url_id>"
 }
 ```
 
 ### Redirect URL API
 
 ```
-curl -L -X GET http://localhost:3000/<url_id>
+curl -L -X GET http://localhost/<url_id>
 ```
 ### Response
 REDIRECT to orininal URL
 
 ### TestApp
 ```
-    npm run test
+ npm run test
 ```
