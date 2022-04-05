@@ -7,9 +7,9 @@
 ## DB schema
 |Name  | Data type | Description |
 |------|------|------|
-|id(PK)| text| short_url id |
-|org_url|text| origin url
-|expire|textstamp without time zone| expire time
+|id(PK)| text| short_url |
+|org_url|text| origin url |
+|expire|textstamp without time zone| expire time |
 
 
 ## short_id 設計
