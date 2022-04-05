@@ -118,5 +118,5 @@ REDIRECT to orininal URL
 
 ### TestApp
 ```
-    npm run test
+ npm run test
 ```
