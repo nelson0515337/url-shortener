@@ -7,7 +7,7 @@
 ## DB schema
 |Name  | Data type | Description |
 |------|------|------|
-|id(PK)| text| short_url |
+|id(PK)| text| short url |
 |org_url|text| origin url |
 |expire|textstamp without time zone| expire time |
 
