@@ -123,7 +123,7 @@ REDIRECT to orininal URL
 #### example
 <img src="img/redirect.png">
 
-### TestApp
+### Unit test
 ```
  npm run test
 ```
