@@ -40,7 +40,7 @@
 * create shortUrl :
     產生的 short_id 若沒有匹配的 prefix 即可直接插入資料，不須再檢查 DB
 
-**值得注意的是 |prefix| << |short_id| 因此不會大量占用 cache 空間**
+**值得注意的是 |prefix| << |short_id| 因此不至於使 cache 空間無法負荷**
 
 ## Create shortUrl 流程:
 
