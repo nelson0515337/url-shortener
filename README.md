@@ -15,7 +15,7 @@
 ## short_id 設計
 該服務希望 short_id 方便使用，所以設計 6 碼 short_id ，
 使用 [nanoid lib]: https://github.com/ai/nanoid 產生類似 UUID 的 short_id，
-為了確保 short_id 發生 collision 時服務仍可以正常運作，產生 short_id 後須檢查有無重複，在插入資料
+為了確保 short_id 發生 collision 時服務仍可以正常運作，產生 short_id 後須檢查有無重複，再插入資料
 
 ## Redis cache 設計:
 一般而言，**url-shortener 服務的 request 數: redirect  >>  create shortUrl**
