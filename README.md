@@ -99,6 +99,10 @@ curl -X POST -H "Content-Type:application/json" http://localhost/url_shortener -
 }'
 ```
 
+### example
+[[/img/create.png]]
+
+
 #### Response
 
 ```
@@ -109,6 +113,9 @@ curl -X POST -H "Content-Type:application/json" http://localhost/url_shortener -
 ```
 
 ### Redirect URL API
+
+### example
+[[/img/create.png]]
 
 ```
 curl -L -X GET http://localhost/<url_id>
