@@ -93,7 +93,7 @@ node index
 ### Upload URL API
 
 ```
-curl -X POST -H "Content-Type:application/json" http://localhost:3000/url_shortener -d '{
+curl -X POST -H "Content-Type:application/json" http://localhost/url_shortener -d '{
 "url": "<original_url>",
 "expireAt": "2021-02-08T09:20:41Z"
 }'
@@ -104,14 +104,14 @@ curl -X POST -H "Content-Type:application/json" http://localhost:3000/url_shorte
 ```
 {
   "id": "<url_id>",
-  "shortUrl": "http://localhost:3000/<url_id>"
+  "shortUrl": "http://localhost/<url_id>"
 }
 ```
 
 ### Redirect URL API
 
 ```
-curl -L -X GET http://localhost:3000/<url_id>
+curl -L -X GET http://localhost/<url_id>
 ```
 ### Response
 REDIRECT to orininal URL
