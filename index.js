@@ -12,7 +12,7 @@ const redisClient = Redis.createClient();
 //const urlencodedParser = bodyParser.urlencoded({ extended: false })
 app.use(bodyParser.text({type: '*/*'}))
 
-const port = 3000
+const port = 80;
 redisClient.connect()
 
 
@@ -84,7 +84,7 @@ app.post("/url_shortener", async(req, res)=>{
       
   } catch(err){
       console.log(err);
-      return;
+      return res.status(500).json('Serevr error');
   }
 })
 
@@ -164,7 +164,7 @@ app.get("/url_shortener/:id", async(req, res)=>{
 
   } catch(err){
       console.log(err);
-      return 
+      return res.status(500).json('server error')
   }
 })
 

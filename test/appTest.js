@@ -126,7 +126,7 @@ describe('Test API', () => {
              // sleep for 5 sec
              var count = 5
              while(count){
-                 console.log(`wait for ${count} seconds`);
+                 console.log(`waiting for ${count} second(s)`);
                  await sleep(1000);
                  count--;
              }
